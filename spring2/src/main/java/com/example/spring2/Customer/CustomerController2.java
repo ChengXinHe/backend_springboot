@@ -1,6 +1,8 @@
 package com.example.spring2.Customer;
 
+import com.example.spring2.exception.ApiRequestException;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
@@ -10,14 +12,14 @@ import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/v2/customers")
-
+@AllArgsConstructor
 public class CustomerController2 {
     private final CustomerService customerService;
-
-    @Autowired
-    CustomerController2(CustomerService customerService) {
-        this.customerService = customerService;
-    }
+    // 因为有@AllArgsConstructor，所以可以删掉。
+//    @Autowired
+//    CustomerController2(CustomerService customerService) {
+//        this.customerService = customerService;
+//    }
 
     @GetMapping
     List<Customer> getCustomers() {
@@ -27,6 +29,13 @@ public class CustomerController2 {
     @GetMapping(path = "{customerId}")
     Customer getCustomer(@PathVariable("customerId") Long id)  {
         return customerService.getCustomer(id);
+    }
+
+    @GetMapping(path = "{customerId}/exception")
+    Customer getCustomerException(@PathVariable("customerId") Long id)  {
+        throw new ApiRequestException(
+                "ApiRequestException for customer " + id
+        );
     }
 
     @PostMapping
